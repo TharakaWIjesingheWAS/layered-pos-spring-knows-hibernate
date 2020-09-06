@@ -6,6 +6,7 @@ import lk.ijse.dep.pos.entity.Customer;
 import lk.ijse.dep.pos.util.CustomerTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -19,8 +20,8 @@ public class CustomerBOImpl implements CustomerBO {
     // Field Injection
     private CustomerDAO customerDAO;
 
+    @Transactional(readOnly = true)
     public List<CustomerTM> getAllCustomers() throws Exception {
-
         List<Customer> allCustomers = customerDAO.findAll();
         List<CustomerTM> customers = new ArrayList<>();
         for (Customer customer : allCustomers) {
@@ -29,6 +30,7 @@ public class CustomerBOImpl implements CustomerBO {
         return customers;
     }
 
+    @Transactional(readOnly = true,propagation = Propagation.MANDATORY)
     public void saveCustomer(String id, String name, String address) throws Exception {
         customerDAO.save(new Customer(id, name, address));
     }
